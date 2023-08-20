@@ -21,6 +21,7 @@ Dealing with secrets in general
 - List repo secrets: `gh secret list --repo <namespace>/<repo name>`
 - Add secret to repo
 
+Manage pacakges, delete etc
 
 create a secret for a repo:
 Good for when you want to add a github action to build and push an image.

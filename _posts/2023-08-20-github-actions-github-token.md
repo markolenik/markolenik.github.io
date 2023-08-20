@@ -1,6 +1,6 @@
 ---
 layout: post
-title: GITHUB_TOKEN in Github Actions
+title: Using GITHUB_TOKEN in GitHub workflows
 date: 2023-08-20 11:52
 author: markolenik
 tags: []
@@ -29,7 +29,6 @@ For example to login to ghcr I can do:
           password: ${{ secrets.GITHUB_TOKEN }}
 {% endraw %}
 ```
-
 
 [^1]: I'd like to change that option using a Github CLI command, e.g. `gh ...`, but I couldn't find one.
 
