@@ -31,21 +31,3 @@ For example to login to ghcr I can do:
 ```
 
 [^1]: I'd like to change that option using a Github CLI command, e.g. `gh ...`, but I couldn't find one.
-
-<script src="https://giscus.app/client.js"
-        data-repo="markolenik/markolenik.github.io"
-        data-repo-id="R_kgDOKH0A5g"
-        data-category="Announcements"
-        data-category-id="DIC_kwDOKH0A5s4CYwG8"
-        data-mapping="title"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="preferred_color_scheme"
-        data-lang="en"
-        crossorigin="anonymous"
-        async>
-</script>
-
-
