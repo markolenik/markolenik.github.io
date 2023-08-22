@@ -38,7 +38,7 @@ jobs:
       - name: 💎 Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1.2
+          ruby-version: 3.1.3
 
       - name: 🔨 Install dependencies & build site
         uses: limjh16/jekyll-action-ts@v2
