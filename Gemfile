@@ -35,6 +35,7 @@ gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 # do not have a Java counterpart.
 gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 
+
 # Plugins
 group :jekyll_plugins do
   gem "jekyll-scholar"
@@ -42,3 +43,4 @@ group :jekyll_plugins do
   gem 'jekyll-seo-tag'
 #   gem 'jekyll-sitemap'
 end
+
