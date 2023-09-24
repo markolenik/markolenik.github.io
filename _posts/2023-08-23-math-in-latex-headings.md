@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Math in LaTeX headings
-date: 2023-08-23 15:45
+date: 2023-08-23 15:45:00 +0200
 author: markolenik
 tags: []
 ---

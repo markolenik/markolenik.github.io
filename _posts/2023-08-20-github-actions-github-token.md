@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Using GITHUB_TOKEN in GitHub workflows
-date: 2023-08-20 11:52
+date: 2023-08-20 11:52:00 +0200
 author: markolenik
 tags: []
 ---
