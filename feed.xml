@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://markolenik.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://markolenik.github.io/" rel="alternate" type="text/html" /><updated>2023-09-24T18:21:33+00:00</updated><id>https://markolenik.github.io/feed.xml</id><title type="html">Mark Olenik</title><subtitle>Blog to document my journey in learning and building things.</subtitle><entry><title type="html">Understanding R Formulas</title><link href="https://markolenik.github.io/2023/09/24/understanding-r-formulas.html" rel="alternate" type="text/html" title="Understanding R Formulas" /><published>2023-09-24T18:00:00+00:00</published><updated>2023-09-24T18:00:00+00:00</updated><id>https://markolenik.github.io/2023/09/24/understanding-r-formulas</id><content type="html" xml:base="https://markolenik.github.io/2023/09/24/understanding-r-formulas.html"><![CDATA[<p>Why is the formula <code class="language-plaintext highlighter-rouge">x ~ (y + z)^2</code> equivalent to <code class="language-plaintext highlighter-rouge">x ~ y*z</code>?
+Here are the exact transformation steps:</p>
+<ul>
+  <li><strong>Step 1:</strong> Start with the formula <code class="language-plaintext highlighter-rouge">x ~ (y + z)^2</code> and take the square, we get <code class="language-plaintext highlighter-rouge">y^2 + z^2 + 2*y*z</code>.</li>
+  <li><strong>Step 2:</strong> In R, the square of a term in a formula (like <code class="language-plaintext highlighter-rouge">y^2</code> or <code class="language-plaintext highlighter-rouge">z^2</code>) just refers to the term itself. So, <code class="language-plaintext highlighter-rouge">y^2</code> becomes <code class="language-plaintext highlighter-rouge">y</code> and <code class="language-plaintext highlighter-rouge">z^2</code> becomes <code class="language-plaintext highlighter-rouge">z</code>. Now, the formula is <code class="language-plaintext highlighter-rouge">x ~ y + z + 2*y*z</code>.</li>
+  <li><strong>Step 4:</strong> The coefficient <code class="language-plaintext highlighter-rouge">2</code> in front of the interaction term <code class="language-plaintext highlighter-rouge">y*z</code> doesn’t change the nature of the interaction, so it is dropped. Now, the formula is <code class="language-plaintext highlighter-rouge">x ~ y + z + y*z</code>.</li>
+  <li><strong>Step 5:</strong> Since <code class="language-plaintext highlighter-rouge">y*z</code> is a shorthand for <code class="language-plaintext highlighter-rouge">y+z+y:z</code>, we get <code class="language-plaintext highlighter-rouge">x ~ 2y + 2z+ y:z</code>. Again we can get rid of the coefficients, which simplifies to <code class="language-plaintext highlighter-rouge">x ~ y + z + y:z</code>, i.e. <code class="language-plaintext highlighter-rouge">x ~ y*z</code>.</li>
+</ul>]]></content><author><name>markolenik</name></author><summary type="html"><![CDATA[Why is the formula x ~ (y + z)^2 equivalent to x ~ y*z? Here are the exact transformation steps: Step 1: Start with the formula x ~ (y + z)^2 and take the square, we get y^2 + z^2 + 2*y*z. Step 2: In R, the square of a term in a formula (like y^2 or z^2) just refers to the term itself. So, y^2 becomes y and z^2 becomes z. Now, the formula is x ~ y + z + 2*y*z. Step 4: The coefficient 2 in front of the interaction term y*z doesn’t change the nature of the interaction, so it is dropped. Now, the formula is x ~ y + z + y*z. Step 5: Since y*z is a shorthand for y+z+y:z, we get x ~ 2y + 2z+ y:z. Again we can get rid of the coefficients, which simplifies to x ~ y + z + y:z, i.e. x ~ y*z.]]></summary></entry><entry><title type="html">Riding the Rollercoaster of R’s Single Dispatch</title><link href="https://markolenik.github.io/2023/09/24/riding-the-rollercoaster-of-r's-single-dispatch.html" rel="alternate" type="text/html" title="Riding the Rollercoaster of R’s Single Dispatch" /><published>2023-09-24T17:30:00+00:00</published><updated>2023-09-24T17:30:00+00:00</updated><id>https://markolenik.github.io/2023/09/24/riding-the-rollercoaster-of-r&apos;s-single-dispatch</id><content type="html" xml:base="https://markolenik.github.io/2023/09/24/riding-the-rollercoaster-of-r&apos;s-single-dispatch.html"><![CDATA[<p>Navigating the R language and its idiosyncratic single dispatch system can feel like a thrilling theme park ride. The syntax is akin to a treasure chest - full of surprises. Let’s embark on a journey that introduces a new dispatch to the <code class="language-plaintext highlighter-rouge">stats::predict</code> function.</p>
+
+<p>R operates on a system known as S3 for single dispatch. When you summon a generic function like <code class="language-plaintext highlighter-rouge">predict</code>, R dispatches to the specific method that aligns with the class of the input object. For instance, <code class="language-plaintext highlighter-rouge">predict.lm</code> for linear models and <code class="language-plaintext highlighter-rouge">predict.glm</code> for generalized linear models.</p>
+
+<p>Here’s your map to adding a custom predict function that always return <code class="language-plaintext highlighter-rouge">1</code> and works on a new class <code class="language-plaintext highlighter-rouge">myModel</code>:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Craft a simple "myModel" class</span><span class="w">
+</span><span class="n">myModel</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nf">class</span><span class="p">(</span><span class="n">lm_model</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"myModel"</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="n">lm_model</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># Carve out a new predict method for "myModel"</span><span class="w">
+</span><span class="n">predict.myModel</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">object</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="c1"># In this example, we'll just always return 1</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># Define our model</span><span class="w">
+</span><span class="n">model_mymodel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myModel</span><span class="p">(</span><span class="n">mpg</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">cyl</span><span class="p">,</span><span class="w"> </span><span class="n">mtcars</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># With our model</span><span class="w">
+</span><span class="n">predict</span><span class="p">(</span><span class="n">model_mymodel</span><span class="p">,</span><span class="w"> </span><span class="n">mtcars</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The head-spinning part is that the first word after the <code class="language-plaintext highlighter-rouge">.</code> designates the class of the object for the single dispatch. And it gets even more crazy when you consider that R allows for dots pretty much everywhere. So don’t mistake the <code class="language-plaintext highlighter-rouge">data.frame</code> to be a form of single dispatch, it’s just an ordinary function call.</p>
+
+<p>Now let’s shift gears and explore Julia, which handles single (and multiple) dispatch with poise and elegance.</p>
+
+<pre><code class="language-Julia"># Define a function for adding two integers
+f(x::Int, y::Int) = x + y
+
+# Define a function for concatenating two strings
+f(x::String, y::String) = string(x, y)
+
+# Usage:
+println(f(2, 3)) # prints "5"
+println(f("Hello, ", "World!")) # prints "Hello, World!"
+</code></pre>
+
+<p>This article isn’t intended to critique R in favor of Julia. In fact, I’m warming up to R, especially when it comes to writing code (though reading code still feels like deciphering hieroglyphics). But there’s always room for improvement.</p>]]></content><author><name>markolenik</name></author><summary type="html"><![CDATA[Navigating the R language and its idiosyncratic single dispatch system can feel like a thrilling theme park ride. The syntax is akin to a treasure chest - full of surprises. Let’s embark on a journey that introduces a new dispatch to the stats::predict function.]]></summary></entry><entry><title type="html">Math in LaTeX headings</title><link href="https://markolenik.github.io/2023/08/23/math-in-latex-headings.html" rel="alternate" type="text/html" title="Math in LaTeX headings" /><published>2023-08-23T13:45:00+00:00</published><updated>2023-08-23T13:45:00+00:00</updated><id>https://markolenik.github.io/2023/08/23/math-in-latex-headings</id><content type="html" xml:base="https://markolenik.github.io/2023/08/23/math-in-latex-headings.html"><![CDATA[<p>I often need math in my LaTeX headings.
+This is a problem because headings are used in the table of contents, where math can’t be properly rendered.
+<code class="language-plaintext highlighter-rouge">chktex</code> also complains about math in headings and throws the error:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Token not allowed in a PDF string (Unicode)
+</code></pre></div></div>
+
+<p>The fix is to provide a “plain text” version of the heading for the PDF table of contents as an option, for example:.</p>
+
+<div class="language-latex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">\section</span><span class="na">[The Logistic Map: x_{n+1} = r x_n (1 - x_n)]</span><span class="p">{</span>The Logistic Map: <span class="p">$</span><span class="nb">x</span><span class="p">_{</span><span class="nb">n</span><span class="o">+</span><span class="m">1</span><span class="p">}</span><span class="nb"> </span><span class="o">=</span><span class="nb"> r x</span><span class="p">_</span><span class="nb">n </span><span class="o">(</span><span class="m">1</span><span class="nb"> </span><span class="o">-</span><span class="nb"> x</span><span class="p">_</span><span class="nb">n</span><span class="o">)</span><span class="p">$}</span>
+</code></pre></div></div>
+
+<h1 id="resources">Resources</h1>
+<ul>
+  <li>User BRBoer on <a href="https://www.reddit.com/r/LaTeX/comments/qxudfy/math_mode_in_section/hlclqxj/">r/LaTeX</a></li>
+</ul>]]></content><author><name>markolenik</name></author><summary type="html"><![CDATA[I often need math in my LaTeX headings. This is a problem because headings are used in the table of contents, where math can’t be properly rendered. chktex also complains about math in headings and throws the error: Token not allowed in a PDF string (Unicode)]]></summary></entry><entry><title type="html">Using GITHUB_TOKEN in GitHub workflows</title><link href="https://markolenik.github.io/2023/08/20/github-actions-github-token.html" rel="alternate" type="text/html" title="Using GITHUB_TOKEN in GitHub workflows" /><published>2023-08-20T09:52:00+00:00</published><updated>2023-08-20T09:52:00+00:00</updated><id>https://markolenik.github.io/2023/08/20/github-actions-github-token</id><content type="html" xml:base="https://markolenik.github.io/2023/08/20/github-actions-github-token.html"><![CDATA[<p>Today, I was learning about GitHub Actions and wanted to set up a workflow that builds and pushes an image to the GitHub registry as a package.
+However, pushing images requires write permission, which I used to add in the past using a custom token via GitHub’s “secrets” feature.
+For example, I would use the command <code class="language-plaintext highlighter-rouge">gh secret set GH_TOKEN</code>, and within my workflow, I could access it using the variable <code class="language-plaintext highlighter-rouge">secrets.GH_TOKEN</code>.
+This approach required adding an explicit secret for each repository, which had some overhead.</p>
+
+<p>A more convenient solution is to use the <code class="language-plaintext highlighter-rouge">GITHUB_TOKEN</code> variable, which is a built-in token provided by GitHub with repo-scope permission.
+By default, it only has read permissions, but for pushing images, it needs write permission.
+I changed this option in the repository’s settings menu under “Actions/Workflow permissions” to “Read and write permission”<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>.</p>
+
+<p>Now I can simply use the token everywhere a password is required.
+For example to login to ghcr I can do:</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">...</span>
+
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Login to GHCR</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">docker/login-action@v2</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">registry</span><span class="pi">:</span> <span class="s">ghcr.io</span>
+          <span class="na">username</span><span class="pi">:</span> <span class="s">${{ github.repository_owner }}</span>
+          <span class="na">password</span><span class="pi">:</span> <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
+
+</code></pre></div></div>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>I’d like to change that option using a Github CLI command, e.g. <code class="language-plaintext highlighter-rouge">gh ...</code>, but I couldn’t find one. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>markolenik</name></author><summary type="html"><![CDATA[Today, I was learning about GitHub Actions and wanted to set up a workflow that builds and pushes an image to the GitHub registry as a package. However, pushing images requires write permission, which I used to add in the past using a custom token via GitHub’s “secrets” feature. For example, I would use the command gh secret set GH_TOKEN, and within my workflow, I could access it using the variable secrets.GH_TOKEN. This approach required adding an explicit secret for each repository, which had some overhead.]]></summary></entry><entry><title type="html">Multi-arch Docker Builds</title><link href="https://markolenik.github.io/2023/08/17/multi-arch-docker-builds.html" rel="alternate" type="text/html" title="Multi-arch Docker Builds" /><published>2023-08-17T15:14:00+00:00</published><updated>2023-08-17T15:14:00+00:00</updated><id>https://markolenik.github.io/2023/08/17/multi-arch-docker-builds</id><content type="html" xml:base="https://markolenik.github.io/2023/08/17/multi-arch-docker-builds.html"><![CDATA[<p>In the process of developing a solid reproducible research pipeline for R, I was surprised to learn that robust reproducibility requires multi-arch Docker builds.
+I was even more surprised to learn that building multi-arch Docker images is not as straightforward as I had hoped.
+Here’s is a summary of my findings.</p>
+
+<h1 id="multi-arch-images">Multi-arch images</h1>
+<p>Most of my prototyping is done on a Macbook Pro with an M1 processor (ARM64 chip), compute intensive tasks are run on an Intel Xeon server (AMD64 chip).
+When building with <code class="language-plaintext highlighter-rouge">docker build .</code> docker will build an image for the architecture of the host machine.
+This means that if I build an image on my M1 Macbook Pro, the image will not run on the Intel Xeon server, which is a problem.</p>
+
+<p>The solution is multi-arch images.
+A multi-arch image uses a so called “manifest” that contains the image for each architecture.
+When the multi-arch image is pulled, docker will automatically select the correct image for the architecture of the host machine.</p>
+
+<h1 id="how-to-build-multi-arch-images">How to build multi-arch images</h1>
+<p>There are two ways to build multi-arch images, use Docker’s <code class="language-plaintext highlighter-rouge">buildx</code>, or manually build and push the image for each architecture.</p>
+
+<h2 id="buildx-approach">Buildx approach</h2>
+<p>The <code class="language-plaintext highlighter-rouge">buildx</code> method is the easier of the two, it builds and pushes the multi-arch image in a single command, and the images for each architecture are built in concurrently.
+It requires a builder that supports multi-arch, which can be created with</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker buildx create --name multi-arch-builder --bootstrap --use
+</code></pre></div></div>
+<p>Building and pushing the multi-arch image is then done with a single command:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker buildx build --push --platform linux/arm64,linux/amd64 -t &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt; .
+</code></pre></div></div>
+<p>I encountered a couple issues with this method, which is why right now I prefer the old and manual approach.</p>
+<ol>
+  <li>Currently the <code class="language-plaintext highlighter-rouge">buildx</code> method requires that building and pushing happens in a single command (see <a href="https://github.com/docker/buildx/issues/1152">this issue</a>).</li>
+  <li>There’s no automatic caching of intermediate layers.
+Even if your build succeeds but the push fails, you have to start from scratch.
+There’s a manual workaround for this, but it’s not ideal (see <a href="https://github.com/docker/buildx/discussions/1382">this discusssion</a>).</li>
+  <li>Podman doesn’t support multi-arch <code class="language-plaintext highlighter-rouge">buildx</code> yet (which might change in the future).</li>
+</ol>
+
+<h2 id="manual-approach">Manual approach</h2>
+<p>The old and manual approach works with both Docker and Podman.
+It involves the following steps:</p>
+<ol>
+  <li>Build the image for each architecture.</li>
+  <li>Push the image for each architecture.</li>
+  <li>Create a manifest that contains both images.</li>
+  <li>Push manifest to the registry.</li>
+</ol>
+
+<p>Building for both <code class="language-plaintext highlighter-rouge">ARM64</code> and <code class="language-plaintext highlighter-rouge">AMD64</code> can be done with the following commands:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Build images
+docker build --platform linux/arm64 -t &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt;-arm64 .
+docker build --platform linux/amd64 -t &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt;-amd64 .
+
+# Push images
+docker push &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt;-arm64
+docker push &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt;-amd64
+
+# Create manifest
+docker manifest create &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt; &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt;-arm64 &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt;-amd64
+
+# Push manifest
+docker manifest push &lt;registry&gt;/&lt;namespace&gt;/&lt;package&gt;:&lt;tag&gt;
+</code></pre></div></div>
+
+<h1 id="references">References</h1>
+<ul>
+  <li>https://www.thorsten-hans.com/how-to-build-multi-arch-docker-images-with-ease/</li>
+  <li>https://www.docker.com/blog/how-to-rapidly-build-multi-architecture-images-with-buildx/</li>
+</ul>]]></content><author><name>markolenik</name></author><summary type="html"><![CDATA[In the process of developing a solid reproducible research pipeline for R, I was surprised to learn that robust reproducibility requires multi-arch Docker builds. I was even more surprised to learn that building multi-arch Docker images is not as straightforward as I had hoped. Here’s is a summary of my findings.]]></summary></entry></feed>

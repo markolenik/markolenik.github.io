@@ -1,0 +1,2 @@
+# markolenik.github.io
+[![Deploy Jekyll site to Pages](https://github.com/markolenik/markolenik.github.io/actions/workflows/cicd.yml/badge.svg)](https://github.com/markolenik/markolenik.github.io/actions/workflows/cicd.yml)
