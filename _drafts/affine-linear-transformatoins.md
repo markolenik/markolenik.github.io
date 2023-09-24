@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Affine & Linear Transformations
-date: 2023-08-22 07:13
+date: 2023-08-22 07:13:00 +0200
 author: markolenik
 tags: []
 ---

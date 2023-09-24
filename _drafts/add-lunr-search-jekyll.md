@@ -1,7 +1,7 @@
 ---
 layout: post
 title: How to set up lunr search for your Jekyll site
-date: 2023-08-23 13:10
+date: 2023-08-23 13:10:00 +0200
 author: markolenik
 tags: []
 ---

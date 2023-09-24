@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Change of variables in difference equations
-date: 2023-08-22 08:57
+date: 2023-08-22 08:57:00 +0200
 author: markolenik
 tags: []
 ---

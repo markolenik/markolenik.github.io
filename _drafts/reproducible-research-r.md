@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Reproducible Research in R etc etc
-date: 2023-08-23 16:24
+date: 2023-08-23 16:24:00 +0200
 author: markolenik
 tags: []
 ---

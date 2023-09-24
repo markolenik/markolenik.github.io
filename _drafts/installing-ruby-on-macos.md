@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Installing Ruby on macOS (The struggle)
-date: 2023-08-22 09:41
+date: 2023-08-22 09:41:00 +0200
 author: markolenik
 tags: []
 ---

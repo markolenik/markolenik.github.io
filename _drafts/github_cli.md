@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Github CLI overview
-date: 2023-08-19 17:18
+date: 2023-08-19 17:18:00 +0200
 author: markolenik
 tags: []
 ---

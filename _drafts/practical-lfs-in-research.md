@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Practical LFS in Research
-date: 2023-09-06 10:41
+date: 2023-09-06 10:41:00 +0200
 author: markolenik
 tags: []
 ---

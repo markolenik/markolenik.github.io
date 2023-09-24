@@ -2,7 +2,7 @@
 layout: post
 title: Stranger in a Strange Land
 subtitle: Robert A. Heinlein
-date: 2023-08-22 18:47
+date: 2023-08-22 18:47:00 +0200
 author: markolenik
 tags: []
 ---
