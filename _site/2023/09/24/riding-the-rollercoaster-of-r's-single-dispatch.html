@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Riding the Rollercoaster of R’s Single Dispatch | Mark Olenik</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="Riding the Rollercoaster of R’s Single Dispatch" />
+<meta name="author" content="markolenik" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Navigating the R language and its idiosyncratic single dispatch system can feel like a thrilling theme park ride. The syntax is akin to a treasure chest - full of surprises. Let’s embark on a journey that introduces a new dispatch to the stats::predict function." />
+<meta property="og:description" content="Navigating the R language and its idiosyncratic single dispatch system can feel like a thrilling theme park ride. The syntax is akin to a treasure chest - full of surprises. Let’s embark on a journey that introduces a new dispatch to the stats::predict function." />
+<link rel="canonical" href="http://localhost:4000/2023/09/24/riding-the-rollercoaster-of-r's-single-dispatch.html" />
+<meta property="og:url" content="http://localhost:4000/2023/09/24/riding-the-rollercoaster-of-r's-single-dispatch.html" />
+<meta property="og:site_name" content="Mark Olenik" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-09-24T19:30:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Riding the Rollercoaster of R’s Single Dispatch" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"markolenik"},"dateModified":"2023-09-24T19:30:00+02:00","datePublished":"2023-09-24T19:30:00+02:00","description":"Navigating the R language and its idiosyncratic single dispatch system can feel like a thrilling theme park ride. The syntax is akin to a treasure chest - full of surprises. Let’s embark on a journey that introduces a new dispatch to the stats::predict function.","headline":"Riding the Rollercoaster of R’s Single Dispatch","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/09/24/riding-the-rollercoaster-of-r's-single-dispatch.html"},"url":"http://localhost:4000/2023/09/24/riding-the-rollercoaster-of-r's-single-dispatch.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Mark Olenik" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Mark Olenik</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/search.html">Search</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+
+<small>24 September 2023</small>
+<h1>Riding the Rollercoaster of R's Single Dispatch</h1>
+<h4></h4>
+
+<p class="view">by markolenik</p>
+
+
+<p>Navigating the R language and its idiosyncratic single dispatch system can feel like a thrilling theme park ride. The syntax is akin to a treasure chest - full of surprises. Let’s embark on a journey that introduces a new dispatch to the <code class="language-plaintext highlighter-rouge">stats::predict</code> function.</p>
+
+<p>R operates on a system known as S3 for single dispatch. When you summon a generic function like <code class="language-plaintext highlighter-rouge">predict</code>, R dispatches to the specific method that aligns with the class of the input object. For instance, <code class="language-plaintext highlighter-rouge">predict.lm</code> for linear models and <code class="language-plaintext highlighter-rouge">predict.glm</code> for generalized linear models.</p>
+
+<p>Here’s your map to adding a custom predict function that always return <code class="language-plaintext highlighter-rouge">1</code> and works on a new class <code class="language-plaintext highlighter-rouge">myModel</code>:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Craft a simple "myModel" class</span><span class="w">
+</span><span class="n">myModel</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nf">class</span><span class="p">(</span><span class="n">lm_model</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"myModel"</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="n">lm_model</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># Carve out a new predict method for "myModel"</span><span class="w">
+</span><span class="n">predict.myModel</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">object</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="c1"># In this example, we'll just always return 1</span><span class="w">
+    </span><span class="nf">return</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># Define our model</span><span class="w">
+</span><span class="n">model_mymodel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myModel</span><span class="p">(</span><span class="n">mpg</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">cyl</span><span class="p">,</span><span class="w"> </span><span class="n">mtcars</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># With our model</span><span class="w">
+</span><span class="n">predict</span><span class="p">(</span><span class="n">model_mymodel</span><span class="p">,</span><span class="w"> </span><span class="n">mtcars</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The head-spinning part is that the first word after the <code class="language-plaintext highlighter-rouge">.</code> designates the class of the object for the single dispatch. And it gets even more crazy when you consider that R allows for dots pretty much everywhere. So don’t mistake the <code class="language-plaintext highlighter-rouge">data.frame</code> to be a form of single dispatch, it’s just an ordinary function call.</p>
+
+<p>Now let’s shift gears and explore Julia, which handles single (and multiple) dispatch with poise and elegance.</p>
+
+<pre><code class="language-Julia"># Define a function for adding two integers
+f(x::Int, y::Int) = x + y
+
+# Define a function for concatenating two strings
+f(x::String, y::String) = string(x, y)
+
+# Usage:
+println(f(2, 3)) # prints "5"
+println(f("Hello, ", "World!")) # prints "Hello, World!"
+</code></pre>
+
+<p>This article isn’t intended to critique R in favor of Julia. In fact, I’m warming up to R, especially when it comes to writing code (though reading code still feels like deciphering hieroglyphics). But there’s always room for improvement.</p>
+
+
+
+<ol class="bibliography"></ol>
+
+
+<!-- 
+  <small>tags: <em></em></small>
+ -->
+
+
+
+
+<script src="https://giscus.app/client.js"
+        data-repo="markolenik/markolenik.github.io"
+        data-repo-id="R_kgDOKH0A5g"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOKH0A5s4CYwG8"
+        data-mapping="title"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+</script>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Mark Olenik</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Mark Olenik</li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/markolenik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">markolenik</span></a></li><li><a href="https://www.twitter.com/mark_olenik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">mark_olenik</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Blog to document my journey in learning and building things.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
