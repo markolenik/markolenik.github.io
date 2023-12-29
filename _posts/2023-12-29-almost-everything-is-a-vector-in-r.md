@@ -39,6 +39,6 @@ is.vector(x) # [1] TRUE
 To test for atomic vectors, we can either specify the mode of the vecor, i.e. `is.vector(x, mode = "numeric")`, or use `is.atomic`. I come from a Python background, so I prefer `is.atomic` and avoid `is.vector`, since when I think of vectors, I think of atomic vectors.
 
 # References
-* https://cran.r-project.org/doc/manuals/r-release/R-lang.html#Expression-objects
-* https://homerhanumat.github.io/r-notes/what-is-a-vector.html
-* https://adv-r.hadley.nz/vectors-chap.html
+* <https://cran.r-project.org/doc/manuals/r-release/R-lang.html#Expression-objects>
+* <https://homerhanumat.github.io/r-notes/what-is-a-vector.html>
+* <https://adv-r.hadley.nz/vectors-chap.html>

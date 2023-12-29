@@ -64,5 +64,5 @@ docker manifest push <registry>/<namespace>/<package>:<tag>
 ```
 
 # References
-* https://www.thorsten-hans.com/how-to-build-multi-arch-docker-images-with-ease/
-* https://www.docker.com/blog/how-to-rapidly-build-multi-architecture-images-with-buildx/
+* <https://www.thorsten-hans.com/how-to-build-multi-arch-docker-images-with-ease/>
+* <https://www.docker.com/blog/how-to-rapidly-build-multi-architecture-images-with-buildx/>
