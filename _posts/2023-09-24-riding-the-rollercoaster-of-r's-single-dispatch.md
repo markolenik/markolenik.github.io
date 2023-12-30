@@ -32,7 +32,12 @@ model_mymodel = myModel(mpg ~ cyl, mtcars)
 predict(model_mymodel, mtcars)
 ```
 
-The head-spinning part is that the first word after the `.` designates the class of the object for the single dispatch. And it gets even more crazy when you consider that R allows for dots pretty much everywhere. So don't mistake the `data.frame` to be a form of single dispatch, it's just an ordinary function call.
+The head-spinning part is that the first word after the `.` designates the class of the object for the single dispatch. And it gets even more crazy when you consider that R allows for dots pretty much everywhere. So don't mistake the `data.frame` to be a form of single dispatch, it's just an ordinary function call, as the following snippet confirms:
+
+```R
+sloop:ftype(data.frame)
+#> [1] "function"
+```
 
 Now let's shift gears and explore Julia, which handles single (and multiple) dispatch with poise and elegance.
 
