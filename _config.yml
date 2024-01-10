@@ -34,7 +34,7 @@ plugins:
   - jekyll-seo-tag
   # - jekyll-sitemap
   - jekyll-scholar
-  - jekyll-katex  # it takes time to generate   
+  # - jekyll-katex  # it takes time to generate   
 
 
 # collections:
