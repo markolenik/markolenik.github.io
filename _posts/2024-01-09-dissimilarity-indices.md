@@ -3,7 +3,6 @@ layout: post
 title: Dissimilarity indices and identities
 date: 2024-01-09 17:56:00 +0200
 author: markolenik
-katex: true
 tags: []
 ---
 The two common dissimilarity indices used in microbiome research are the Bray-Curtis and the Jaccard indices.

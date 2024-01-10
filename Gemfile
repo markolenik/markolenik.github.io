@@ -39,8 +39,6 @@ gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 # Plugins
 group :jekyll_plugins do
   gem "jekyll-scholar"
-  gem 'jekyll-katex'
   gem 'jekyll-seo-tag'
-#   gem 'jekyll-sitemap'
 end
 

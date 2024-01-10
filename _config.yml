@@ -32,9 +32,7 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
-  # - jekyll-sitemap
   - jekyll-scholar
-  # - jekyll-katex  # it takes time to generate   
 
 
 # collections:
@@ -52,13 +50,6 @@ plugins:
 
 
 math_engine: katex
-
-# katex:
-#   # js_path: "assets"  # Path used to search for katex.min.js
-#   rendering_options:
-#     # Default KaTeX rendering options. See https://github.com/Khan/KaTeX#rendering-options
-#     throw_error: false      # throwOnError - set to false if you want rendering to output error as text rather than a build error
-#     error_color: "#cc0000"  # errorColor
 
 scholar:
   style: apa
