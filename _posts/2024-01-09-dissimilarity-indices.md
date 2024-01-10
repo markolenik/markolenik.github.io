@@ -3,9 +3,11 @@ layout: post
 title: Dissimilarity indices and identities
 date: 2024-01-09 17:56:00 +0200
 author: markolenik
-katex: true
 tags: []
 ---
+
+{% katexmm %}
+
 The two common dissimilarity indices used in microbiome research are the Bray-Curtis and the Jaccard indices.
 Both can be applied to either abundance data (non-negative vectors) or presence/absence data (binary vectors). 
 The Bray-Curtis index is more commonly used for non-negative vectors and the Jaccard index for binary vectors, however, here I'll consider only binary vectors.
@@ -32,7 +34,7 @@ $$
 $$
 
 ## Bray-Curtis dissimilarity
-The Bray-Curtis dissimilarity $d_B$ for binary vectors $\bold{x}, \bold{y} \in \set{0, 1}^N$ is informally (e.g. in [wikipedia](https://en.wikipedia.org/wiki/Bray-Curtis_dissimilarity)) defined as
+The Bray-Curtis dissimilarity $d_B$ for binary vectors $\bold{x}, \bold{y} \in \{0, 1\}^N$ is informally (e.g. in [wikipedia](https://en.wikipedia.org/wiki/Bray-Curtis_dissimilarity)) defined as
 
 $$
 d_B(\bold x, \bold y) := 1 - \frac{2 C_{xy}}{S_x + S_y}
@@ -54,23 +56,20 @@ $$
 Then 
 
 $$
-\begin{align*}
-1 - \frac{2 \sum\limits_i \min{(x_i, y_i)}}{\sum\limits_i(x_i + y_i)} &= \frac{\sum\limits_i \big(x_i + y_i- 2 \min{(x_i, y_i)}\big)}{\sum\limits_i(x_i + y_i)} \\
-
-&= \frac{\sum\limits_i \big(x_i + y_i- 2 \min{(x_i, y_i)} + \max{(x_i, y_i) - \max{(x_i, y_i)}}\big)}{ \sum\limits_i(x_i + y_i)} \\
-
+\begin{aligned}
+1 - \frac{2 \sum\limits_i \min{(x_i, y_i)}}{\sum\limits_i(x_i + y_i)} & = \frac{\sum\limits_i \big(x_i + y_i- 2 \min{(x_i, y_i)}\big)}{\sum\limits_i(x_i + y_i)}\\
+&= \frac{\sum\limits_i \big(x_i + y_i- 2 \min{(x_i, y_i)} + \max{(x_i, y_i)} - \max{(x_i, y_i)}\big)}{\sum\limits_i(x_i + y_i)} \\
 &= \frac{\sum\limits_i \big(x_i + y_i- \max{(x_i, y_i)} - \min{(x_i, y_i)} + |x_i - y_i| \big)}{\sum\limits_i(x_i + y_i)}\\
-
-&= \frac{\sum\limits_i \big(|x_i - y_i| \big)}{\sum\limits_i(x_i + y_i)}\; \blacksquare\\
-\end{align*}
+&= \frac{\sum\limits_i \big(|x_i - y_i| \big)}{\sum\limits_i(x_i + y_i)}\; \blacksquare
+\end{aligned}
 $$
+
 
 The last step follows from the fact that 
 
-$$\max{(x_i, y_i)} + \min{(x_i, y_i)} = x_i + y_i$$
-
-
-
+$$
+\max{(x_i, y_i)} + \min{(x_i, y_i)} = x_i + y_i
+$$ 
 
 ## Jaccard distance
 The Jaccard distance is defined as
@@ -100,11 +99,11 @@ $$
 We simplify the denominator as follows
 
 $$
-\begin{align*}
+\begin{aligned}
 &\sum \limits_i (x_i + y_i) + \sum \limits_i |x_i - y_i| =\sum \limits_i \big( x_i + y_i + \max{(x_i, y_i)} - \min{(x_i, y_i)} \big) =\\[1.5em]
 &\sum \limits_i \big( x_i + y_i + \max{(x_i, y_i)} - \min{(x_i, y_i)} + \max{(x_i, y_i)} - \max{(x_i, y_i)} \big) =\\[1.5em]
 &2\sum \limits_i \max{(x_i, y_i)}
-\end{align*}
+\end{aligned}
 $$
 
 Putting everything together we get
@@ -127,30 +126,32 @@ $$
 The Tanimoto distance is equal to the Jaccard distance for binary vectors:
 
 $$
-\begin{align*}
+\begin{aligned}
 d_J(\bold x, \bold y) &= d_T(\bold x, \bold y)\\[1.5em]
 1 - \frac{\sum \min(x_i, y_i)}{\sum \max(x_i, y_i)} &= 1 - \frac{\bold x \cdot \bold y}{\bold x \cdot \bold x + \bold y \cdot \bold y - \bold x \cdot \bold y}
-\end{align*}
+\end{aligned}
 $$
 
 This identity follows from the fact that for binary vectors the dot product can be simplified to 
 
 $$
-\begin{align*}
+\begin{aligned}
 \bold x \cdot \bold y &= \sum \min{(x_i, y_i)}\\
 \bold x \cdot \bold x &= \sum x_i
-\end{align*}
+\end{aligned}
 $$
 
 Simplifying $d_T$ we get 
 
 $$
-\begin{align*}
+\begin{aligned}
 d_T(\mathbf{x}, \mathbf{y}) &= 1 -\frac{\sum \min(x_i, y_i)}{\sum x_i + \sum y_i - \sum \min(x_i, y_i)} \\[1.5em]
 &=1 - \frac{\sum \min(x_i, y_i)}{\sum \big( x_i + y_i - \min(x_i, y_i) + \max(x_i, y_i) - \max(x_i, y_i)\big )} \\[1.5em]
 &=1 - \frac{\sum \min(x_i, y_i)}{\sum \max(x_i, y_i)} = d_J(\mathbf{x}, \mathbf{y}) \; \blacksquare
-\end{align*}
+\end{aligned}
 $$
+
+{% endkatexmm %}
 
 # References
 * [Metric and Euclidean properties of dissimilarity coefficients (Gower et al 1986)](https://link.springer.com/article/10.1007/BF01896809)

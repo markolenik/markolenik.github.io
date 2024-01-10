@@ -34,6 +34,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-scholar
   - jekyll-remote-theme
+  - jekyll-katex
 
 # collections:
 #   blog:
@@ -47,11 +48,6 @@ plugins:
 #   tags:
 #     output: true
 #     permalink: /:collection/:title
-
-kramdown:
-  math_engine: katex
-  math_engine_opts:
-    output: mathml
 
 remote_theme: jekyll/minima
 
