@@ -26,27 +26,33 @@ Only the latter is correct, since the Bray-Curtis does not satisfy the triangle 
 The terms "coefficient" and "index" are also used in a hand-wavy way.
 Throughout the documentation of `vegdist()` the authors use "index" to mean either "dissimilarity" or "distance".
 Wikipedia uses "index" and means "coefficient" or "similarity", e.g. in the [Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index), where
+
 $$
 \text{dissimilarity} = 1 - \text{similarity}
 $$
 
 ## Bray-Curtis dissimilarity
 The Bray-Curtis dissimilarity $d_B$ for binary vectors $\bold{x}, \bold{y} \in \set{0, 1}^N$ is informally (e.g. in [wikipedia](https://en.wikipedia.org/wiki/Bray-Curtis_dissimilarity)) defined as
+
 $$
 d_B(\bold x, \bold y) := 1 - \frac{2 C_{xy}}{S_x + S_y}
 $$
+
 where $C_{xy}$ is the number of common species between $\bold x$ and $\bold y$, and $S_x$ and $S_y$ are the total number of species in $\bold x$ and $\bold y$, respectively.
 A more explicit definition is 
+
 $$
 d_B(\bold{x}, \bold{y}) := 1 - \frac{2 \sum\limits_i \min{(x_i, y_i)}}{\sum\limits_i(x_i + y_i)} \overset{(1)}{=} \frac{\sum\limits_i |x_i - y_i|}{\sum\limits_i (x_i + y_i)}
 $$
 
 The identity $(1)$ can be shown using the properties of the absolute value function:
+
 $$
 |x - y| = \max{(x, y)} - \min{(x, y)} 
 $$
 
 Then 
+
 $$
 \begin{align*}
 1 - \frac{2 \sum\limits_i \min{(x_i, y_i)}}{\sum\limits_i(x_i + y_i)} &= \frac{\sum\limits_i \big(x_i + y_i- 2 \min{(x_i, y_i)}\big)}{\sum\limits_i(x_i + y_i)} \\
@@ -58,6 +64,7 @@ $$
 &= \frac{\sum\limits_i \big(|x_i - y_i| \big)}{\sum\limits_i(x_i + y_i)}\; \blacksquare\\
 \end{align*}
 $$
+
 The last step follows from the fact that 
 
 $$\max{(x_i, y_i)} + \min{(x_i, y_i)} = x_i + y_i$$
@@ -67,21 +74,31 @@ $$\max{(x_i, y_i)} + \min{(x_i, y_i)} = x_i + y_i$$
 
 ## Jaccard distance
 The Jaccard distance is defined as
-$$ d_J(\bold x, \bold y) := 1 - \frac{\sum\limits_i \min{(x_i, y_i)}}{\sum\limits_i\max{(x_i, y_i)}} $$
+
+$$
+d_J(\bold x, \bold y) := 1 - \frac{\sum\limits_i \min{(x_i, y_i)}}{\sum\limits_i\max{(x_i, y_i)}}
+$$
 
 According to [`vegdist`](https://rdrr.io/cran/vegan/man/vegdist.html) it can be expressed in terms of the Bray-Curtis dissimilarity as
-$$ d_J(\bold x, \bold y) = \frac{2\; d_B(\bold x, \bold y)}{1 + d_B(\bold x, \bold y)} $$
+
+$$
+d_J(\bold x, \bold y) = \frac{2\; d_B(\bold x, \bold y)}{1 + d_B(\bold x, \bold y)}
+$$
 
 Substituting the definition of $d_B$ and simplifying we get
-$$ d_J(\bold x, \bold y) = \frac{2 \sum \limits_i |x_i - y_i|}{\sum \limits_i (x_i + y_i) + \sum \limits_i |x_i - y_i|} $$
+
+$$
+d_J(\bold x, \bold y) = \frac{2 \sum \limits_i |x_i - y_i|}{\sum \limits_i (x_i + y_i) + \sum \limits_i |x_i - y_i|}
+$$
 
 To prove this identity we start by simplifying the numerator as follows
+
 $$
 2 \sum_i |x_i - y_i| = 2 \sum_i \max{(x_i, y_i)} - 2 \sum_i \min{(x_i, y_i)}
-
 $$
 
 We simplify the denominator as follows
+
 $$
 \begin{align*}
 &\sum \limits_i (x_i + y_i) + \sum \limits_i |x_i - y_i| =\sum \limits_i \big( x_i + y_i + \max{(x_i, y_i)} - \min{(x_i, y_i)} \big) =\\[1.5em]
@@ -91,16 +108,21 @@ $$
 $$
 
 Putting everything together we get
+
 $$
 \frac{2 \sum \limits_i \max{(x_i, y_i)} - 2 \sum \limits_i \min{(x_i, y_i)}}{ 2\sum \limits_i \max{(x_i, y_i)} } =
  1 - \frac{\sum \limits_i \min{(x_i, y_i)}}{\sum \limits_i \max{(x_i, y_i)}} \; \blacksquare
 $$
+
 thus proving the identity.
 
 ## Tanimoto distance
 The Tanimoto distance, also called "generalized Jaccard distance", is another common distance found in theoretical ecology.
 It is defined using dot products as
-$$ d_T(\bold x, \bold y) := 1 - \frac{\bold x \cdot \bold y}{\bold x \cdot \bold x + \bold y \cdot \bold y - \bold x \cdot \bold y} $$
+
+$$
+d_T(\bold x, \bold y) := 1 - \frac{\bold x \cdot \bold y}{\bold x \cdot \bold x + \bold y \cdot \bold y - \bold x \cdot \bold y}
+$$
 
 The Tanimoto distance is equal to the Jaccard distance for binary vectors:
 
@@ -110,14 +132,18 @@ d_J(\bold x, \bold y) &= d_T(\bold x, \bold y)\\[1.5em]
 1 - \frac{\sum \min(x_i, y_i)}{\sum \max(x_i, y_i)} &= 1 - \frac{\bold x \cdot \bold y}{\bold x \cdot \bold x + \bold y \cdot \bold y - \bold x \cdot \bold y}
 \end{align*}
 $$
+
 This identity follows from the fact that for binary vectors the dot product can be simplified to 
-$$\begin{align*}
+
+$$
+\begin{align*}
 \bold x \cdot \bold y &= \sum \min{(x_i, y_i)}\\
 \bold x \cdot \bold x &= \sum x_i
 \end{align*}
 $$
 
-Simplifying $d_T$ we get
+Simplifying $d_T$ we get 
+
 $$
 \begin{align*}
 d_T(\mathbf{x}, \mathbf{y}) &= 1 -\frac{\sum \min(x_i, y_i)}{\sum x_i + \sum y_i - \sum \min(x_i, y_i)} \\[1.5em]
